@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+
+        }
+
+        #navbar {
+            display: flex;
+        }
+
+        #leftnav span {
+            position: relative;
+            top: -15px;
+            left: 20px;
+        }
+
+        img {
+            width: 170px;
+            height: 60px;
+            border-radius: 10px;
+            margin-left: 50px;
+            margin-top: 5px;
+
+        }
+
+        input {
+            position: relative;
+            top: 10px;
+
+            width: 200%;
+            height: 30px;
+            font-size: 20px;
+            font-weight: bolder;
+            left: 300px;
+        }
+
+        #rightnav span {
+            position: relative;
+            top: 2px;
+            left: 800px;
+            padding: 10px;
+        }
+
+        #left-body {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+
+            position: relative;
+            left: 20px;
+            top: 30px;
+            cursor: pointer;
+        }
+        #second-nav{
+            display: flex;
+            position: relative;
+           top: -550px;
+           left: 250px;
+           gap: 30px;
+           font-size: 20px;
+           
+          
+        }
+        #second-nav p{
+            border: 1px solid black;
+            border-radius: 5px;
+            cursor: pointer;
+            padding: 5px;
+            background-color: rgb(235, 228, 228);
+        }
+        #second-nav p:hover{
+            background-color: lightslategrey;
+        }
+        #left-body span{
+            display: inline;
+        }
+        /* #videos{
+            width: calc(100%-250px);
+            margin-top: 120px;
+            margin-left:250px ;
+            padding:20px ;
+            display: grid;
+            grid-template-columns:repeat(4,25%) ;
+            grid-gap:20px,5px ;
+            overflow-x: hidden;
+
+        } */
+        /* .thumbnail{
+            width:100% ;
+            height:150px ;
+            object-fit: cover;
+        } */
+    </style>
+</head>
+
+<body>
+    <div id="navbar">
+        <div id="leftnav">
+            <span class="material-icons">
+                menu
+            </span>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Logo_of_YouTube_%282015-2017%29.svg/502px-Logo_of_YouTube_%282015-2017%29.svg.png"
+                alt="logo">
+
+        </div>
+
+
+        <div id="midnav">
+            <input type="text" placeholder="Search">
+        </div>
+        <div id="rightnav">
+            <span class="material-icons">
+                emergency_recording
+            </span>
+
+            <span class="material-icons">
+                apps
+            </span>
+
+            <span class="material-icons">
+                notifications
+            </span>
+        </div>
+    </div>
+    <hr>
+    <div id="body">
+        <div id="left-body">
+            <span class="material-icons">
+                home
+            </span><span>Home</span>
+
+            <span class="material-icons">
+                explore
+            </span><span>Explore</span>
+
+            <span class="material-icons">
+                subscriptions
+            </span><span>Subscriptions</span>
+
+            <span class="material-icons">
+                video_library
+            </span><span>Library</span>
+
+            <span class="material-icons">
+                history
+            </span><span>History</span>
+
+            <span class="material-icons">
+                switch_video
+            </span><span>Your video</span>
+
+            <span class="material-icons">
+                watch_later
+            </span><span>Watch later</span>
+
+            <span class="material-icons">
+                thumb_up
+            </span><span>Liked Videos</span>
+            </div>
+
+           <div id="right-body">
+            <div id="second-nav">
+              <p>All  </p>
+              <p>Comedies</p>
+              <p>Stock Markets</p>
+              <p>Movies</p>
+              <p>Auditions</p>
+              <p>Scene</p>
+              <p>C++</p>
+              <p>Food</p>
+              <p>Songs</p>
+              <p>Cricket</p>
+              <p>Data Science</p>
+              <p>Trending</p>
+
+            </div>
+          
+            <div id="videos">
+             <!-- <img src="" alt="" class="thumbnail">
+             <div class="content">
+                 <img src="" alt="" class="channelicon">
+                 <div class="info">
+                     <h4 class="title"></h4>
+                     <p class="class-name"></p>
+                 </div>
+             </div> -->
+            </div>
+
+
+        </div>
+    </div>
+  <script>
+      const videocard_container=document.querySelector("#videos");
+    let api_key="AIzaSyCAHiMTJHQZfI-MDuquoSMwr41McH-8vec";
+    let video_http=" https://www.googleapis.com/youtube/v3/videos?";
+    let channel_http="https://www.googleapis.com/youtube/v3/channels?";
+    fetch(video_http + new URLSearchParams({
+        key:api_key,
+        part:"snippet",
+        chart:"mostPopular",
+        maxResults:50,
+        regionCode:'IN'
+    }))
+    .then(res=>res.json())
+    .then(data=>{
+        // console.log(data);
+        data.items.forEach(item=>{
+            getChannelIcon(item);
+        })
+    })
+    .catch(err=>console.log(err))
+    const getChannelIcon=(video_data)=>{
+        fetch(channel_http + new URLSearchParams({
+            key:api_key,
+        part:"snippet",
+        id:video_data.snippet.channelId
+        }))
+        .then(res=>res.json())
+        .then(data=>{
+           video_data.channelthumbnail=data.items[0].snippet.thumbnails.default.url;
+        //    
+        makeVideocard(video_data);
+        })
+
+    }
+    const makeVideocard=(data)=>{
+       
+       videocard_container.innerHTML +=`
+       <div id="videos" onclick="location.href='https://youtube.com/watch?v=${data.id}'">
+        <img src="${data.snippet.thumbnails.high.url}" class="thumbnail" alt="">
+        <div class="content">
+            <img src="${data.channelthumbnail}" class="channelicon" alt="">
+            <div class="info">
+                <h4 class="title">${data.snippet.title}</h4>
+                <p class="channel-name "${data.snippet.channelTitle}></p>
+                </div>
+                </div>
+                </div>
+         `;
+       
+    }
+     
+  </script>
+</body>
+
+</html>
